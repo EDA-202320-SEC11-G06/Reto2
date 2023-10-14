@@ -37,6 +37,7 @@ from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 assert cf
+from datetime import datetime
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá
@@ -51,18 +52,98 @@ def new_data_structs():
     Inicializa las estructuras de datos del modelo. Las crea de
     manera vacía para posteriormente almacenar la información.
     """
-    #TODO: Inicializar las estructuras de datos
-    pass
+
+    data_structs = {
+        "results": lt.newList(),
+        "goalscorers": lt.newList(),
+        "shootouts": lt.newList(),
+
+        "teams": mp.newMap(),
+        "scorers": mp.newMap(),
+        "tournaments": mp.newMap()
+    }
+
+    return data_structs
 
 
 # Funciones para agregar informacion al modelo
 
-def add_data(data_structs, data):
+def add_data_results(data_structs, diccionario):
     """
     Función para agregar nuevos elementos a la lista
     """
-    #TODO: Crear la función para agregar elementos a una lista
-    pass
+    results = data_structs["results"]
+    teams = data_structs["teams"]
+    lt.addLast(results,diccionario)
+    diccionario["date"] = datetime.fromisoformat(diccionario["date"])
+
+    home_team = diccionario["home_team"]
+    away_team = diccionario["away_team"]
+
+    add_team(home_team, data_structs, diccionario, "local")
+    add_team(away_team, data_structs, diccionario, "visitante")
+    
+def add_team(team, data_structs, diccionario, condicion):
+    mapa_teams = data_structs["teams"]
+
+    if mp.contains(mapa_teams,team):
+        value = me.getValue(mp.get(mapa_teams,team))
+    else:
+        value = {"local": lt.newList(),
+                 "visitante": lt.newList(),
+                 "partidos": lt.newList()}
+        mp.put(mapa_teams,team,value)
+    if condicion == "visitante":
+        lt.addLast(value["visitante"],diccionario)
+    else: 
+        lt.addLast(value["local"],diccionario)
+    lt.addLast(value["partidos"],diccionario)
+
+
+def add_data_goalscorers(data_structs, diccionario):
+    """
+    Función para agregar nuevos elementos a la lista
+    """
+    goalscorer = data_structs["goalscorers"]
+    lt.addLast(goalscorer,diccionario)
+    diccionario["date"] = datetime.fromisoformat(diccionario["date"])
+
+def add_data_shootouts(data_structs, diccionario):
+    """
+    Función para agregar nuevos elementos a la lista
+    """
+    shootouts = data_structs["shootouts"]
+    lt.addLast(shootouts,diccionario)
+    diccionario["date"] = datetime.fromisoformat(diccionario["date"])
+
+
+def ordenar_fechas(lista):
+    merg.sort(lista,sort_date)
+
+def sort_date(data1,data2):
+    return data1["date"] > data2["date"]
+
+# def add_map(map, key, data, file):
+#    if  mp.contains(map,key):
+#        entry = mp.get(map,key)
+#        value = me.getValue(entry)
+#    else:
+#        llave = key
+#        value = mp.newMap()
+#        mp.put(value,"results",lt.newList())
+#        mp.put(value,"goalscorers",lt.newList())
+#        mp.put(value,"shootouts",lt.newList())
+
+#    if file == "results":
+#        lista= me.getValue(mp.get(value,"results"))
+       
+#    elif file == "goalscorers":
+#        lista= me.getValue(mp.get(value,"goalscorers"))
+#    else:
+#        lista= me.getValue(mp.get(value,"shootouts"))
+
+#    lt.addLast(lista,data)
+
 
 
 # Funciones para creacion de datos
@@ -85,21 +166,44 @@ def get_data(data_structs, id):
     pass
 
 
-def data_size(data_structs):
+def data_size_results(data_structs):
     """
     Retorna el tamaño de la lista de datos
     """
-    #TODO: Crear la función para obtener el tamaño de una lista
-    pass
+    results = data_structs["results"]
+    return lt.size(results)
+
+def data_size_goalscorers(data_structs):
+    """
+    Retorna el tamaño de la lista de datos
+    """
+    goalscorers = data_structs["goalscorers"]
+    return lt.size(goalscorers)
+
+def data_size_shootouts(data_structs):
+    """
+    Retorna el tamaño de la lista de datos
+    """
+    shootouts = data_structs["shootouts"]
+    return lt.size(shootouts)
 
 
-def req_1(data_structs):
+def req_1(data_structs, n, equipo, condicion):
     """
     Función que soluciona el requerimiento 1
     """
-    # TODO: Realizar el requerimiento 1
-    pass
+    mapa_teams = data_structs["teams"]
+    diccionario_partidos = me.getValue(mp.get(mapa_teams, equipo))
+    if condicion == "local":
+        lista = diccionario_partidos["local"]
+    elif condicion == "visitante":
+        lista = diccionario_partidos["visitante"]
+    else:
+        lista = diccionario_partidos["partidos"]
 
+    ordenar_fechas(lista)
+    return lt.subList(lista,1,n)
+    
 
 def req_2(data_structs):
     """

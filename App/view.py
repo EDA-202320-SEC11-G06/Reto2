@@ -44,8 +44,7 @@ def new_controller():
     """
         Se crea una instancia del controlador
     """
-    #TODO: Llamar la función del controlador donde se crean las estructuras de datos
-    pass
+    return controller.new_controller()
 
 
 def print_menu():
@@ -66,8 +65,39 @@ def load_data(control):
     """
     Carga los datos
     """
-    #TODO: Realizar la carga de datos
-    pass
+    size = "small"
+    sort_type = "merge"
+    list_type = "ARRAY_LIST"
+    map_type = "PROBING"
+
+    filename = "football/results-utf8-"+size+".csv"
+    filename1 = "football/goalscorers-utf8-small.csv"
+    filename2 = "football/shootouts-utf8-small.csv"
+
+    size = controller.load_data_results(control, filename)
+    size1 = controller.load_data_goalscorers(control,filename1)
+    size2 = controller.load_data_shootouts(control, filename2)
+
+    print("Match result count: "+str(size))
+    print("Goal scorers count: "+str(size1))
+    print("shooutoust-penalty definition count "+str(size2),"\n")
+
+    print(tabulate(lt.iterator(prim_ult_3(control["results"])),headers="keys",tablefmt="grid"))
+    print(tabulate(lt.iterator(prim_ult_3(control["goalscorers"])),headers="keys",tablefmt="grid"))
+    print(tabulate(lt.iterator(prim_ult_3(control["shootouts"])),headers="keys",tablefmt="grid"))
+
+
+
+def prim_ult_3(lista):
+    first3 = lt.subList(lista,1,3)
+    last3 = lt.subList(lista,lt.size(lista)-2,3)
+    for elem in lt.iterator(last3):
+        lt.addLast(first3,elem)
+    return first3
+
+
+
+
 
 
 def print_data(control, id):
@@ -81,8 +111,14 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    n = 15
+    equipo = "Italy"
+    condicion = "local"
+    lista = controller.req_1(control, n, equipo, condicion)
+    if lt.size(lista) > 6:
+        lista = prim_ult_3(lista)
+
+    print(tabulate(lt.iterator(lista),headers="keys",tablefmt="grid"))
 
 
 def print_req_2(control):
@@ -133,7 +169,7 @@ def print_req_7(control):
     pass
 
 
-def print_req_8(control):
+def pipprint_req_8(control):
     """
         Función que imprime la solución del Requerimiento 8 en consola
     """

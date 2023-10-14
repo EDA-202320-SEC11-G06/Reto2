@@ -35,18 +35,34 @@ def new_controller():
     """
     Crea una instancia del modelo
     """
-    #TODO: Llamar la función del modelo que crea las estructuras de datos
-    pass
-
+    return model.new_data_structs()
 
 # Funciones para la carga de datos
 
-def load_data(control, filename):
-    """
-    Carga los datos del reto
-    """
-    # TODO: Realizar la carga de datos
-    pass
+
+def load_data_results(control, filename):
+    contentfile = cf.data_dir + filename
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for diccionario in input_file:
+        model.add_data_results(control, diccionario)
+    model.ordenar_fechas(control["results"])
+    return model.data_size_results(control)
+
+def load_data_goalscorers(control, filename):
+    contentfile = cf.data_dir + filename
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for diccionario in input_file:
+        model.add_data_goalscorers(control, diccionario)
+    model.ordenar_fechas(control["goalscorers"])
+    return model.data_size_goalscorers(control)  
+
+def load_data_shootouts(control, filename):
+    contentfile = cf.data_dir + filename
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for diccionario in input_file:
+        model.add_data_shootouts(control, diccionario)
+    model.ordenar_fechas(control["shootouts"])
+    return model.data_size_shootouts(control)  
 
 
 # Funciones de ordenamiento
@@ -69,12 +85,11 @@ def get_data(control, id):
     pass
 
 
-def req_1(control):
+def req_1(control, n, equipo, condicion):
     """
     Retorna el resultado del requerimiento 1
     """
-    # TODO: Modificar el requerimiento 1
-    pass
+    return model.req_1(control, n, equipo, condicion)
 
 
 def req_2(control):
